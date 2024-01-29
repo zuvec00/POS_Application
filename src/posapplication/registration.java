@@ -5,11 +5,26 @@
  */
 package posapplication;
 
+import java.security.SecureRandom;
+
 /**
  *
  * @author isms
  */
 public class registration extends javax.swing.JFrame {
+    private static final String UPPER_CASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String LOWER_CASE = "abcdefghijklmnopqrstuvwxyz";
+    private static final String DIGITS = "0123456789";
+    private static final String SYMBOLS = "!@#$%^&*()-_=+[]{}|;:'\",.<>/?";
+
+    private static final String ALL_CHARACTERS = UPPER_CASE + LOWER_CASE + DIGITS + SYMBOLS;
+
+    // Password length constraints
+    private static final int MIN_LENGTH = 8;
+    private static final int MAX_LENGTH = 12;
+
+    // Random number generator
+    private static final SecureRandom random = new SecureRandom();
 
     /**
      * Creates new form posFrame
@@ -132,7 +147,7 @@ public class registration extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Role", "Sales", "IT admin", "Inventory" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -268,12 +283,75 @@ public class registration extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        try{
+            //Get the registration details
+            String firstName = jTextField1.getText();
+            String lastName = jTextField2.getText();
+            String dateOfBirth = null;
+            String emailID = jTextField3.getText();
+            String phoneNumber = jTextField4.getText();
+            String gender = null;
+
+            if(jRadioButton1.isSelected()){
+                gender = jRadioButton1.getText();
+            }else if(jRadioButton2.isSelected()){
+                gender = jRadioButton2.getText();
+            }
+            String  role = jComboBox1.getSelectedItem().toString();
+            String password = generatePassword();
+            System.out.println("Generated Password: " + password);
+            
+            
+            //connect to database 
+         /*** MySQL connection logic here ***/
+         
+            
+        }catch(Exception e){
+        }        // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
+    
+    // P A S S W O R D  G E N E R A T O R
+    public static String generatePassword() {
+        // To ensure the password length is within bounds
+        int passwordLength = MIN_LENGTH + random.nextInt(MAX_LENGTH - MIN_LENGTH + 1);
+
+        StringBuilder password = new StringBuilder(passwordLength);
+
+        // Add at least one character from each character set
+        password.append(getRandomChar(UPPER_CASE));
+        password.append(getRandomChar(LOWER_CASE));
+        password.append(getRandomChar(DIGITS));
+        password.append(getRandomChar(SYMBOLS));
+
+        // Fill the remaining characters randomly from the combined set
+        for (int i = 4; i < passwordLength; i++) {
+            password.append(getRandomChar(ALL_CHARACTERS));
+        }
+
+        // Shuffle the characters to ensure randomness
+        return shuffleString(password.toString());
+    }
+    private static char getRandomChar(String characterSet) {
+        // Get a random character from the given set
+        int randomIndex = random.nextInt(characterSet.length());
+        return characterSet.charAt(randomIndex);
+    }
+    private static String shuffleString(String input) {
+        // Convert the string to a char array and shuffle it
+        char[] characters = input.toCharArray();
+        for (int i = characters.length - 1; i > 0; i--) {
+            int randomIndex = random.nextInt(i + 1);
+            char temp = characters[i];
+            characters[i] = characters[randomIndex];
+            characters[randomIndex] = temp;
+        }
+        // Convert the shuffled char array back to a string
+        return new String(characters);
+    }
 
     /**
      * @param args the command line arguments
@@ -310,6 +388,8 @@ public class registration extends javax.swing.JFrame {
             }
         });
     }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
