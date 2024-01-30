@@ -145,7 +145,7 @@ public class Login extends javax.swing.JFrame {
                 } else if ("Inventory".equals(staffRole)) {
                     // Inventroy()
                 } else if ("IT admin".equals(staffRole)) {
-                    registration registration1 = new registration();
+                    ITAdmin registration1 = new ITAdmin();
                     registration1.show();
                     dispose();
                 } else {

@@ -121,7 +121,7 @@ public class Webcam extends javax.swing.JFrame {
                 System.out.println("Error: " + 2);
                 JOptionPane.showMessageDialog(rootPane, Filename + "Captured");
                 System.out.println("Error: " + 3);
-               // registration.jTextField1.setText(Filename);
+               // ITAdmin.jTextField1.setText(Filename);
                 File image = new File(Filename);
                 FileInputStream fis = new FileInputStream(image);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -130,8 +130,8 @@ public class Webcam extends javax.swing.JFrame {
                 for(int i; (i=fis.read(Byte)) != -1;){
                     baos.write(Byte, 0, i);
                 }
-                registration.photo = baos.toByteArray();
-                System.out.println("Photo byte: "+ registration.photo);
+                ITAdmin.photo = baos.toByteArray();
+                System.out.println("Photo byte: "+ ITAdmin.photo);
                     
             }catch(Exception e){
                 stopCam();
@@ -188,9 +188,9 @@ public class Webcam extends javax.swing.JFrame {
                 ImageIcon imageicon = new ImageIcon(new ImageIcon(Filename).getImage().getScaledInstance(jLabel1.getWidth(),
                         jLabel1.getHeight(),Image.SCALE_DEFAULT));
                 jLabel1.setIcon(imageicon);
-                ImageIcon imageico = new ImageIcon(new ImageIcon(Filename).getImage().getScaledInstance(registration.jLabel2.getWidth(),
-                        registration.jLabel2.getHeight(),Image.SCALE_DEFAULT));
-                registration.jLabel2.setIcon(imageico);
+                ImageIcon imageico = new ImageIcon(new ImageIcon(Filename).getImage().getScaledInstance(ITAdmin.jLabel2.getWidth(),
+                        ITAdmin.jLabel2.getHeight(),Image.SCALE_DEFAULT));
+                ITAdmin.jLabel2.setIcon(imageico);
             }
         }catch(Exception e){
             JOptionPane.showMessageDialog(rootPane, "Warning: "+ e);
