@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
@@ -178,15 +179,11 @@ public class Inventory2 extends javax.swing.JFrame {
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 540, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(7, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3)
-                        .addContainerGap())))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 540, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,6 +282,11 @@ public class Inventory2 extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTable2);
 
         jButton5.setText("UPDATE");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("CLEAR");
 
@@ -328,7 +330,7 @@ public class Inventory2 extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton6)))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton7)))
@@ -370,7 +372,7 @@ public class Inventory2 extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addComponent(jButton7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -383,7 +385,7 @@ public class Inventory2 extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 943, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -483,7 +485,9 @@ public class Inventory2 extends javax.swing.JFrame {
                     rs.getString(4),rs.getInt(5),rs.getDouble(6),});
             }
             JOptionPane.showMessageDialog(rootPane, "Refresh  Successful.");
-        }catch(Exception e){}        // TODO add your handling code here:
+        }catch(Exception e){
+            System.out.println("Error: " + e);
+        }        // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -504,12 +508,21 @@ public class Inventory2 extends javax.swing.JFrame {
                 String productName = rs.getString("product_name");
                 String manufacturingDate = rs.getString("manufacturing_date");
                 String expirationDate = rs.getString("expiration_date");
+                
+                //Parse string to date
+                Date parsedDate1 = parseDateString(manufacturingDate);
+                Date parsedDate2 = parseDateString(expirationDate);
+                
                 int quantity = rs.getInt("quantity");
-                double price = rs.getDouble("prce");      
+                double price = rs.getDouble("price");      
                 System.out.println(productName);
                 
                 
                 jTextField5.setText(productName);
+                jDateChooser3.setDate(parsedDate1);
+                jDateChooser4.setDate(parsedDate2);
+                jSpinner2.setValue(quantity);
+                jTextField6.setText(Double.toString(price));
             }
         }catch(Exception e){
             System.out.println("Error: " + e);
@@ -540,6 +553,47 @@ public class Inventory2 extends javax.swing.JFrame {
         }//        // TODO add your handling code here:
     }//GEN-LAST:event_jTable2AncestorAdded
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        String productCode = jTextField1.getText();
+        String productName = jTextField2.getText(); 
+        String manufacturingDate = null;    
+        String expirationDate = null;
+        Date selectedDate1 = jDateChooser1.getDate();
+        Date selectedDate2 = jDateChooser2.getDate();
+            
+            if(selectedDate1!=null && selectedDate2!=null){
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                manufacturingDate = dateFormat.format(selectedDate1);
+                expirationDate = dateFormat.format(selectedDate2);
+            }else{
+              JOptionPane.showMessageDialog(this,"Please choose a date.","Date Selection Error", JOptionPane.ERROR_MESSAGE);
+            }
+        int quantity = Integer.parseInt(jSpinner1.getValue().toString()) ;
+        System.out.println(quantity);
+        double price = Double.parseDouble(jTextField3.getText());
+        
+        try{
+             //connect and insert to database
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/pau_pos","root","root")    ;
+            System.out.println("Connected");
+            PreparedStatement ps = con.prepareStatement("UPDATE pau_products SET product_name = ?, manufacturing_date = ?, e WHERE condition_column = ?");
+        }catch(Exception e){
+            System.out.println("Error: " + e);
+        }
+
+                // TODO add your handling code here:
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private static Date parseDateString(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            System.out.println("Parse Error: " + e);
+            return null; // Handle the parsing exception accordingly
+        }
+    }
     /**
      * @param args the command line arguments
      */

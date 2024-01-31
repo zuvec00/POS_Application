@@ -327,7 +327,7 @@ public class InventoryScreen extends javax.swing.JFrame {
             
              
             
-         //   tableModel.addRow(data);
+         //   tableModel.a5ddRow(data);
             while(rs.next()){
                 tableModel.addRow(new Object[] {rs.getString(1),rs.getString(2),rs.getString(3),
                     rs.getString(4),rs.getInt(5),rs.getDouble(6),});
