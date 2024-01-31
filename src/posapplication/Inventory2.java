@@ -291,6 +291,11 @@ public class Inventory2 extends javax.swing.JFrame {
         jButton6.setText("CLEAR");
 
         jButton7.setText("REFRESH TABLE");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -554,12 +559,12 @@ public class Inventory2 extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable2AncestorAdded
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        String productCode = jTextField1.getText();
-        String productName = jTextField2.getText(); 
+        String productCode = jTextField4.getText();
+        String productName = jTextField5.getText(); 
         String manufacturingDate = null;    
         String expirationDate = null;
-        Date selectedDate1 = jDateChooser1.getDate();
-        Date selectedDate2 = jDateChooser2.getDate();
+        Date selectedDate1 = jDateChooser3.getDate();
+        Date selectedDate2 = jDateChooser4.getDate();
             
             if(selectedDate1!=null && selectedDate2!=null){
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -568,22 +573,61 @@ public class Inventory2 extends javax.swing.JFrame {
             }else{
               JOptionPane.showMessageDialog(this,"Please choose a date.","Date Selection Error", JOptionPane.ERROR_MESSAGE);
             }
-        int quantity = Integer.parseInt(jSpinner1.getValue().toString()) ;
+        int quantity = Integer.parseInt(jSpinner2.getValue().toString()) ;
         System.out.println(quantity);
-        double price = Double.parseDouble(jTextField3.getText());
+        double price = Double.parseDouble(jTextField6.getText());
         
         try{
              //connect and insert to database
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/pau_pos","root","root")    ;
             System.out.println("Connected");
-            PreparedStatement ps = con.prepareStatement("UPDATE pau_products SET product_name = ?, manufacturing_date = ?, e WHERE condition_column = ?");
+            PreparedStatement ps = con.prepareStatement("UPDATE pau_products SET product_name = ?, manufacturing_date = ?, expiration_date = ?, quantity = ?, price = ? WHERE product_code = ?");
+            
+            ps.setString(1, productName);
+            ps.setString(2, manufacturingDate);
+            ps.setString(3, expirationDate);
+            ps.setInt(4, quantity);
+            ps.setDouble(5, price);
+            ps.setString(6, productCode);
+            
+            int rs = ps.executeUpdate();
+            
+            JOptionPane.showMessageDialog(rootPane,"Updated Records Successfully");
+            
         }catch(Exception e){
             System.out.println("Error: " + e);
         }
 
                 // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+         try{
+        
+            DefaultTableModel tableModel = (DefaultTableModel) jTable2.getModel();
+            
+            //delete all rows
+            tableModel.setRowCount(0);
+        //connect and insert to database 
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/pau_pos","root","root")    ;
+            System.out.println("Connected");
+            PreparedStatement ps = con.prepareStatement("select * from pau_products");           
+            ResultSet rs = ps.executeQuery();
+            
+             
+            
+         //   tableModel.addRow(data);
+            while(rs.next()){
+                tableModel.addRow(new Object[] {rs.getString(1),rs.getString(2),rs.getString(3),
+                    rs.getString(4),rs.getInt(5),rs.getDouble(6),});
+            }
+            JOptionPane.showMessageDialog(rootPane, "Refresh  Successful.");
+        }catch(Exception e){
+            System.out.println("Error: " + e);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     private static Date parseDateString(String dateString) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
